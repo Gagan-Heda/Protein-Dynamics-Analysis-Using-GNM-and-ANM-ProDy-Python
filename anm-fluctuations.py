@@ -3,25 +3,20 @@ import numpy as np
 import prody
 from prody import *
 
+#ANM: 3D model - predicts both magnitude and direction (3D vector for each residue)
+
 def main():
     if len(sys.argv) != 2:
+        print("Usage: python anm-fluctuations.py <PDB_ID>")
         sys.exit(1)
 
     pdb_id = sys.argv[1].lower()
-
-    # Suppress ProDy informational output
     prody.LOGGER._setverbosity('none')
-
-    # Parse PDB (C-alpha atoms only)
     structure = parsePDB(pdb_id, subset='ca')
 
-    # Calculate ANM with default arguments
+    #Performs Anisotropic Network Model (ANM)
     anm, atoms = calcANM(structure)
-
-    # Compute squared fluctuations using all modes
     fluctuations = calcSqFlucts(anm[:])
-
-    # Print the largest fluctuation
     print(f"Max ANM SqFluct: {np.max(fluctuations):.3f}")
 
 if __name__ == "__main__":
